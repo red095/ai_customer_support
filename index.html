@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Customer Support</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+<h1>AI-Powered Customer Support Agent</h1>
+
+<h2>Ask a Question</h2>
+<form id="ask-form">
+    <textarea id="query" placeholder="Enter your question..." required></textarea>
+    <button type="submit">Ask</button>
+</form>
+<div id="ask-response" class="response"></div>
+
+<h2>Send Email</h2>
+<form id="send-email-form">
+    <input type="email" id="to" placeholder="Recipient's Email" required />
+    <input type="text" id="subject" placeholder="Subject" required />
+    <textarea id="message" placeholder="Message" required></textarea>
+    <button type="submit">Send Email</button>
+</form>
+<div id="email-response" class="response"></div>
+
+<h2>Schedule Follow-up</h2>
+<form id="schedule-form">
+    <input type="text" id="summary" placeholder="Event Summary" />
+    <textarea id="description" placeholder="Event Description"></textarea>
+    <input type="datetime-local" id="start_time" required />
+    <input type="datetime-local" id="end_time" required />
+    <input type="email" id="email" placeholder="Your Email" required />
+    <button type="submit">Schedule Follow-up</button>
+</form>
+<div id="schedule-response" class="response"></div>
+
+<h2>Start Telegram Bot</h2>
+<button id="start-bot-button">Start Telegram Bot</button>
+<div id="bot-response" class="response"></div>
+
+<script>
+    document.getElementById('ask-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const query = document.getElementById('query').value;
+
+        const response = await fetch('/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query })
+        });
+
+        const data = await response.json();
+        document.getElementById('ask-response').innerText = data.response || data.message;
+    });
+
+    document.getElementById('send-email-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const to = document.getElementById('to').value;
+        const subject = document.getElementById('subject').value;
+        const message = document.getElementById('message').value;
+
+        const response = await fetch('/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ to, subject, message })
+        });
+
+        const data = await response.json();
+        document.getElementById('email-response').innerText = data.message || data.error;
+    });
+
+    document.getElementById('schedule-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const summary = document.getElementById('summary').value || "Customer Follow-up";
+        const description = document.getElementById('description').value || "Follow up on a customer query";
+        const start_time = document.getElementById('start_time').value;
+        const end_time = document.getElementById('end_time').value;
+        const email = document.getElementById('email').value;
+
+        const response = await fetch('/schedule-followup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ summary, description, start_time, end_time, email })
+        });
+
+        const data = await response.json();
+        document.getElementById('schedule-response').innerText = data.message || data.error;
+    });
+
+    document.getElementById('start-bot-button').addEventListener('click', async () => {
+        const response = await fetch('/start-telegram-bot');
+
+        const data = await response.json();
+        document.getElementById('bot-response').innerText = data.message;
+    });
+</script>
+
+</body>
+</html>

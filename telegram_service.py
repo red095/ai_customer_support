@@ -6,7 +6,7 @@ from telegram.ext import CommandHandler, MessageHandler, filters, Updater, Appli
 from gemini_ai import get_gemini_response
 
 # Your Telegram Bot API token
-TELEGRAM_API_TOKEN = '7958040791:AAF79eUPFA9013PTigfqH_QjotNgqJwOZOA'
+TELEGRAM_API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
 
 bot = Bot(token=TELEGRAM_API_TOKEN)
 
